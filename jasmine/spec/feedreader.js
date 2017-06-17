@@ -25,41 +25,96 @@ $(function() {
         /* TODO:
          * 编写一个测试遍历 allFeeds 对象里面的所有的源来保证有链接字段而且链接不是空的。
          */
-
+        it('URL are defined', function() {
+          for (var i = 0; i < allFeeds.length; i++) {
+            expect(allFeeds[i].url).toBeDefined();
+            expect(allFeeds[i].url).not.toBe('');
+          }
+        });
 
         /* TODO:
          * 编写一个测试遍历 allFeeds 对象里面的所有的源来保证有名字字段而且不是空的。
          */
+        it('name are defined', function() {
+          for (var i = 0; i < allFeeds.length; i++) {
+            expect(allFeeds[i].url).toBeDefined();
+            expect(allFeeds[i].url).not.toBe('');
+          }
+        })
     });
 
 
     /* TODO: 写一个叫做 "The menu" 的测试用例 */
+    describe('The menu', function() {
+      /* TODO:
+       * 写一个测试用例保证菜单元素默认是隐藏的。你需要分析 html 和 css
+       * 来搞清楚我们是怎么实现隐藏/展示菜单元素的。
+       */
+       var body = document.body;
+       var menuIcon = document.querySelector('.menu-icon-link');
 
-        /* TODO:
-         * 写一个测试用例保证菜单元素默认是隐藏的。你需要分析 html 和 css
-         * 来搞清楚我们是怎么实现隐藏/展示菜单元素的。
-         */
+       it('菜单元素默认是隐藏的', function() {
+         expect(body.className).toContain('menu-hidden');
+       });
 
-         /* TODO:
-          * 写一个测试用例保证当菜单图标被点击的时候菜单会切换可见状态。这个
-          * 测试应该包含两个 expectation ： 党点击图标的时候菜单是否显示，
-          * 再次点击的时候是否隐藏。
-          */
+       /* TODO:
+        * 写一个测试用例保证当菜单图标被点击的时候菜单会切换可见状态。这个
+        * 测试应该包含两个 expectation ： 党点击图标的时候菜单是否显示，
+        * 再次点击的时候是否隐藏。
+        */
+        it('菜单会切换可见状态', function() {
+          menuIcon.click();
+          expect(body.className).not.toContain('menu-hidden');
+
+          menuIcon.click();
+          expect(body.className).toContain('menu-hidden');
+        });
+    });
 
     /* TODO: 13. 写一个叫做 "Initial Entries" 的测试用例 */
+    describe("Initial Entries", function() {
+      /* TODO:
+       * 写一个测试保证 loadFeed 函数被调用而且工作正常，即在 .feed 容器元素
+       * 里面至少有一个 .entry 的元素。
+       *
+       * 记住 loadFeed() 函数是异步的所以这个而是应该使用 Jasmine 的 beforeEach
+       * 和异步的 done() 函数。
+       */
+       beforeEach(function(done) {
+         loadFeed(0, function() {
+           done();
+         });
+       });
 
-        /* TODO:
-         * 写一个测试保证 loadFeed 函数被调用而且工作正常，即在 .feed 容器元素
-         * 里面至少有一个 .entry 的元素。
-         *
-         * 记住 loadFeed() 函数是异步的所以这个而是应该使用 Jasmine 的 beforeEach
-         * 和异步的 done() 函数。
-         */
+       it('.feed 容器元素里面至少有一个 .entry 的元素', function(done) {
+         var entryNum = document.querySelector('.feed').getElementsByClassName('entry').length;
+         expect(entryNum).toBeGreaterThan(0);
+         done();
+       });
+    });
+
+
 
     /* TODO: 写一个叫做 "New Feed Selection" 的测试用例 */
+    describe("New Feed Selection", function() {
+      /* TODO:
+       * 写一个测试保证当用 loadFeed 函数加载一个新源的时候内容会真的改变。
+       * 记住，loadFeed() 函数是异步的。
+       */
+       var initFeedSelection;
+       beforeEach(function(done) {
+         loadFeed(0, function() {
+            initFeedSelection = document.querySelector('.feed').innerHTML;
+            loadFeed(1, function() {
+              done();
+            });
+         });
+       });
 
-        /* TODO:
-         * 写一个测试保证当用 loadFeed 函数加载一个新源的时候内容会真的改变。
-         * 记住，loadFeed() 函数是异步的。
-         */
+       it('当用 loadFeed 函数加载一个新源的时候内容会真的改变', function(done) {
+         var newFeedSelection = document.querySelector('.feed').innerHTML;
+         expect(initFeedSelection).not.toBe(newFeedSelection);
+         done();
+       });
+    });
 }());
